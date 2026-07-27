@@ -1,6 +1,14 @@
 {
   "name": "notify-panel-monorepo",
   "private": true,
+  "description": "AI agent 的通知收件箱 —— 汇聚 CI/cron/webhook/监控等外部事件,供 AI agent 查收与自动处理",
+  "keywords": [
+    "ai-agent",
+    "agent",
+    "notification",
+    "event-bus",
+    "daemon"
+  ],
   "workspaces": [
     "packages/*",
     "extensions/*"

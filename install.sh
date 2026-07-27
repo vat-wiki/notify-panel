@@ -2,7 +2,7 @@
 # notify-panel 安装脚本
 #
 # 用法(从本仓库 raw 文件安装):
-#   curl -fsSL https://raw.githubusercontent.com/<owner>/notify-panel/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/vat-wiki/notify-panel/main/install.sh | sh
 #
 # 它做的事:
 #   1. 检测 Node.js(>= 18),没有就提示安装

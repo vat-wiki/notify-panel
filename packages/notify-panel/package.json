@@ -1,7 +1,23 @@
 {
   "name": "notify-panel",
   "version": "0.2.0",
-  "description": "系统级通知中心 —— 后台常驻 daemon,统一接收本机所有通知(CLI + SDK + 参考服务端,单包全包含)",
+  "description": "AI agent 的通知收件箱 —— 后台常驻 daemon,汇聚 CI/cron/webhook/监控等外部事件,供 AI agent 查收与自动处理",
+  "keywords": [
+    "ai-agent",
+    "agent",
+    "llm",
+    "notification",
+    "notifications",
+    "notify",
+    "inbox",
+    "event-bus",
+    "daemon",
+    "ci",
+    "automation",
+    "webhook",
+    "cron",
+    "cli"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {

@@ -57,7 +57,7 @@ export interface RunningServer {
  *   2. 把真实地址写入端口文件 ~/.notify-panel/server.json,供集成方发现
  *
  * ```ts
- * import { createServer } from '@notify-panel/server';
+ * import { createServer } from 'notify-panel/server';
  * const { info, panel, close } = await createServer({ secret: 'top-secret' });
  * console.log(info.url); // http://127.0.0.1:54321
  * ```

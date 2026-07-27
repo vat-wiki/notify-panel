@@ -115,13 +115,13 @@ fi
 ### 安装
 
 ```bash
-npm install @notify-panel/sdk
+npm install notify-panel
 ```
 
 ### 基本用法
 
 ```ts
-import { NotifyClient } from '@notify-panel/sdk';
+import { NotifyClient } from 'notify-panel/sdk';
 
 // 零配置:自动发现本机 daemon
 const notify = new NotifyClient();
@@ -137,7 +137,7 @@ await notify.push({
 ### 带错误处理
 
 ```ts
-import { NotifyClient, NotifyError } from '@notify-panel/sdk';
+import { NotifyClient, NotifyError } from 'notify-panel/sdk';
 
 const notify = new NotifyClient();
 

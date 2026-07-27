@@ -11,7 +11,7 @@ notify-panel 是**系统级软件**,这台机器装一次即可。两种方式�
 npm install -g notify-panel
 
 # 方式二:脚本(自动检测 Node、处理权限、给修复提示)
-curl -fsSL https://raw.githubusercontent.com/<owner>/notify-panel/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/vat-wiki/notify-panel/main/install.sh | sh
 ```
 
 > 装不上多半是 npm 全局目录无写权限。脚本会提示两种修复方式(nvm 或改 prefix)。

@@ -1,8 +1,15 @@
 {
   "name": "notify-panel-pi-extension",
   "version": "0.1.0",
-  "description": "pi 扩展:自动轮询本机 notify-panel 收件箱,把未读通知投递给 agent 处理",
-  "keywords": ["pi-package"],
+  "description": "pi 扩展:轮询 notify-panel 收件箱,把未读通知自动投递给 AI agent 处理(事件驱动 agent)",
+  "keywords": [
+    "pi-package",
+    "ai-agent",
+    "agent",
+    "notification",
+    "event-driven",
+    "notify-panel"
+  ],
   "private": true,
   "pi": {
     "extensions": ["./src"]

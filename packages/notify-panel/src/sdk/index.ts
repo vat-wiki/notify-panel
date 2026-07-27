@@ -8,15 +8,15 @@ import {
 } from '../protocol';
 
 /**
- * @notify-panel/sdk —— HTTP API 的完整封装。
+ * `notify-panel/sdk` —— HTTP API 的完整封装。
  *
- * 这是给「集成方」(想把通知推过来的人)用的包。
- * 它封装了 daemon 暴露的**全部** HTTP 端点,对外提供类型安全的 API,
- * 内部统一处理:自动发现、本地校验、鉴权、超时、错误。
+ * 这是给「集成方」(想把通知推过来的人)用的模块。
+ * 它封装了 daemon 暴露的**全部** HTTP 端点，对外提供类型安全的 API，
+ * 内部统一处理：自动发现、本地校验、鉴权、超时、错误。
  *
- * 最简单的用法(零配置,自动发现本地面板):
+ * 最简单的用法（零配置，自动发现本地面板）：
  * ```ts
- * import { NotifyClient } from '@notify-panel/sdk';
+ * import { NotifyClient } from 'notify-panel/sdk';
  * const client = new NotifyClient();
  * await client.push({ source: 'wechat', title: '张三', message: '在吗' });
  * const list = await client.list({ unreadOnly: true });

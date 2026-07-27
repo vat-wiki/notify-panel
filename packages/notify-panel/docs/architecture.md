@@ -27,7 +27,7 @@ notify-panel 的本质是一个**常驻后台的通知中心进程(daemon)**。�
 
 ### 为什么不让客户端直接调 core?
 
-我们有一个 `@notify-panel/core` 包,里面有 `NotifyPanel` 类、存储、事件。为什么不让所有客户端直接 import 它?
+我们有一个 `core` 模块(`src/core/`),里面有 `NotifyPanel` 类、存储、事件。为什么不让所有客户端直接 import 它?
 
 因为那样会变成**进程内库**,只能跟自己对话:
 - ❌ Python 脚本没法 import TS 库
@@ -90,7 +90,7 @@ packages/
 | 跨语言对接 | 啥都不装,看协议文档 | 任何 npm 包 |
 | 要类型/校验 | `protocol` | 实现代码 |
 
-## 协议层(`@notify-panel/protocol`)
+## 协议层（`src/protocol/`）
 
 这是整个体系的**地基**。它定义:
 
@@ -100,11 +100,11 @@ packages/
 4. **传输协议常量** —— HTTP 路径、事件名、media-type
 5. **服务发现读取** —— 集成方怎么找到 daemon
 
-**为什么协议要独立成包?**
+**为什么协议要独立成一个模块？**
 
-因为"什么是合法通知"这份定义**只能有一份**。如果 daemon 和客户端各自定义,迟早对不上。独立包 + 零依赖,双方都愿意直接依赖它,定义就统一了。
+因为"什么是合法通知"这份定义**只能有一份**。如果 daemon 和客户端各自定义，迟早对不上。协议层零依赖、纯类型 + 校验器，daemon 实现、TS SDK、跨语言对接方都引用同一份定义，接口就统一了。协议版本锁在 `v1`（见 `ServerInfo.protocol`），跟包的 npm 版本号解耦。
 
-详见 [协议规范](../packages/protocol/README.md)。
+详见 [协议 JSON Schema](../schemas/)。
 
 ## 服务发现机制
 
@@ -130,7 +130,7 @@ daemon 端口不固定(可能冲突、可能开多实例),客户端怎么找到�
 
 引导死循环:要知道 daemon 在哪才能设环境变量,可环境变量是用来告诉别人 daemon 在哪的。
 
-**端口文件是「路径固定、内容动态」** —— Docker 的 `/var/run/docker.sock`、VSCode server 都是这套路。详见 [协议规范 - 本地服务发现](../packages/protocol/README.md#三本地服务发现service-discovery)。
+**端口文件是「路径固定、内容动态」** —— Docker 的 `/var/run/docker.sock`、VSCode server 都是这套路。
 
 ## 数据存储
 

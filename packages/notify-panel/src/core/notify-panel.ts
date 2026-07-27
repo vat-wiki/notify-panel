@@ -43,7 +43,7 @@ export interface CoreEvents {
  *
  * 最简单的用法(当库直接用):
  * ```ts
- * import { NotifyPanel } from '@notify-panel/core';
+ * import { NotifyPanel } from 'notify-panel/core';
  * const panel = new NotifyPanel();
  * panel.on('notification', (n) => console.log(n.title, n.message));
  * panel.push({ source: 'wechat', title: '张三', message: '在吗' });
