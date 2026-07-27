@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "notify-panel": ["./src/index.ts"],
+      "notify-panel/protocol": ["./src/protocol/index.ts"],
+      "notify-panel/core": ["./src/core/index.ts"],
+      "notify-panel/sdk": ["./src/sdk/index.ts"],
+      "notify-panel/server": ["./src/server/index.ts"],
+      "notify-panel/cli": ["./src/cli/index.ts"]
+    }
+  },
+  "include": ["examples/**/*"]
+}

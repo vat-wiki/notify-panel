@@ -1,0 +1,27 @@
+{
+  "name": "notify-panel-pi-extension",
+  "version": "0.1.0",
+  "description": "pi 扩展:自动轮询本机 notify-panel 收件箱,把未读通知投递给 agent 处理",
+  "keywords": ["pi-package"],
+  "private": true,
+  "pi": {
+    "extensions": ["./src"]
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": ">=0.80"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": ">=0.80",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vat-wiki/notify-panel.git",
+    "directory": "extensions/pi"
+  }
+}

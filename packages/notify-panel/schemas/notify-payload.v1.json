@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://notify-panel.dev/schemas/notify-payload.v1.json",
+  "title": "NotifyPayload",
+  "description": "Notify Panel 开放协议 v1 —— 单条通知推送载荷",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["source", "title", "message"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "可选,唯一 ID,不传则由面板生成"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "来源标识,例如 wechat / slack / ci-build"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["info", "success", "warning", "error"],
+      "description": "默认 info"
+    },
+    "data": {
+      "type": ["object", "null"],
+      "description": "自定义扩展数据,面板不解释"
+    },
+    "timestamp": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "毫秒时间戳"
+    },
+    "read": { "type": "boolean" },
+    "archived": { "type": "boolean" }
+  }
+}

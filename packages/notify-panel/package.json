@@ -1,0 +1,74 @@
+{
+  "name": "notify-panel",
+  "version": "0.2.0",
+  "description": "系统级通知中心 —— 后台常驻 daemon,统一接收本机所有通知(CLI + SDK + 参考服务端,单包全包含)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js"
+    },
+    "./protocol": {
+      "types": "./dist/protocol/index.d.ts",
+      "require": "./dist/protocol/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "require": "./dist/core/index.js"
+    },
+    "./sdk": {
+      "types": "./dist/sdk/index.d.ts",
+      "require": "./dist/sdk/index.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "require": "./dist/server/index.js"
+    },
+    "./cli": {
+      "types": "./dist/cli/index.d.ts",
+      "require": "./dist/cli/index.js"
+    },
+    "./schemas/*": "./schemas/*"
+  },
+  "bin": {
+    "notify-panel": "dist/cli/cli.js"
+  },
+  "files": [
+    "dist",
+    "schemas",
+    "skill"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "example": "ts-node -T -P tsconfig.examples.json examples/library-usage.ts",
+    "example:server": "ts-node -T -P tsconfig.examples.json examples/server-usage.ts",
+    "example:sdk": "ts-node -T -P tsconfig.examples.json examples/sdk-autodiscover.ts",
+    "start": "ts-node -T -P tsconfig.examples.json src/server/index.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.3.0",
+    "commander": "^15.0.0",
+    "fastify": "^5.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@vitest/coverage-v8": "^4.1.10",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.4.0",
+    "vitest": "^4.1.10"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vat-wiki/notify-panel.git",
+    "directory": "packages/notify-panel"
+  }
+}

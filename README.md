@@ -98,7 +98,7 @@ notify-panel push wechat 张三 "在吗?"
 TS/JS 项目里用,自动发现 daemon、本地校验、类型提示齐全。
 
 ```ts
-import { NotifyClient } from '@notify-panel/sdk';
+import { NotifyClient } from 'notify-panel/sdk';
 const client = new NotifyClient();  // 零配置,自动找到 daemon
 await client.push({ source: 'app', title: '导出完成', message: 'report.xlsx' });
 ```
@@ -137,21 +137,30 @@ requests.post(f"{url}/v1/notify",
 | 想知道 CLI 有哪些命令 | [CLI 命令参考 →](./docs/cli-reference.md) |
 | 有具体场景(CI 通知、定时任务…),想抄配方 | [场景配方 →](./docs/cookbook.md) |
 | 想理解整体架构、为什么这么设计 | [架构设计 →](./docs/architecture.md) |
-| 要用别的语言对接,或自己做 daemon | [协议规范 →](./packages/protocol/README.md) |
-| 想看 API 详细签名 | 各包源码里的 JSDoc 注释 |
+| 要用别的语言对接,或自己做 daemon | [协议规范 →](./packages/notify-panel/src/protocol/README.md) |
+| 想看 API 详细签名 | 源码里的 JSDoc 注释(`packages/notify-panel/src/` 下) |
+| 在 pi(AI 助手)里自动消费通知 | [pi 扩展 →](./extensions/pi/) |
 
-## 包结构(给开发者)
+## 仓库结构(给开发者)
+
+本仓库是 **monorepo**,用 npm workspaces 管理。主包 `notify-panel` 是单一 npm 包(protocol / core / server / sdk / cli 合并);`extensions/` 下是与主包独立分发的集成扩展。
 
 ```
 packages/
-├── protocol/  开放协议(地基,零依赖):类型 + JSON Schema + 校验 + 发现
-├── core/      面板引擎:存储 + 事件 + 查询
-├── server/    daemon 服务端:把 core 暴露成 HTTP 端点
-├── sdk/       TS 集成方 SDK:推通知的类型安全客户端
-└── cli/       命令行:daemon 管理 + 通用客户端
+└── notify-panel/          主包(发 npm)
+    └── src/
+        ├── protocol/  开放协议(地基,零依赖):类型 + JSON Schema + 校验 + 发现
+        ├── core/      面板引擎:存储 + 事件 + 查询
+        ├── server/    daemon 服务端:把 core 暴露成 HTTP 端点
+        ├── sdk/       TS 集成方 SDK:推通知的类型安全客户端
+        └── cli/       命令行:daemon 管理 + 通用客户端
+extensions/
+└── pi/                    pi 扩展(走 pi install 分发,不发布 npm)
 ```
 
 依赖方向:`cli`/`server` → `core` → `protocol`;`sdk`/`cli` 客户端部分 → `protocol`。客户端永远不碰 `core`,只通过 HTTP 跟 daemon 说话。
+
+发布分工:`packages/*` 走 changesets + npm 自动发布;`extensions/*` 各自独立(如 pi 扩展走 `pi install`),不纳入 npm 发版。
 
 ## 安装
 
@@ -175,15 +184,22 @@ npm install
 npm run build
 ```
 
-这是 monorepo,`npm run build` 会构建全部 5 个子包。测试跑源码不依赖 build 产物:
+这是 monorepo。在仓库根执行:
 
 ```bash
-npm test              # 跑全部用例(159 个)
+npm install           # 安装全部 workspace 依赖
+npm run build         # 构建全部 workspace(主包用 tsc)
+npm test              # 跑全部用例(161 个)
+```
+
+测试直接跑源码不依赖 build 产物:
+
+```bash
 npm run test:watch    # watch 模式
 npm run test:coverage # 带覆盖率
 ```
 
-用 [Vitest](https://vitest.dev),配置在根 `vitest.config.ts`。测试用 alias 直接打各包**源码**,不依赖 build 产物,改代码立即生效。
+用 [Vitest](https://vitest.dev),配置在根 `vitest.config.ts`。跨所有 workspace 扫描 `packages/**/test` 和 `extensions/**/test`,直接打各包**源码**,不依赖 build 产物,改代码立即生效。
 
 测试按包分布:
 
