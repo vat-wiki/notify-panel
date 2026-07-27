@@ -1,4 +1,4 @@
-# notify-panel-pi-extension
+# notify-panel-pi
 
 [pi](https://github.com/earendil-works/pi-coding-agent) 扩展:让 AI agent **被通知事件驱动**。
 
@@ -44,7 +44,7 @@ pi install git:github.com/vat-wiki/notify-panel
 # 方式 C:本地开发
 git clone https://github.com/vat-wiki/notify-panel.git
 cd notify-panel && npm install
-pi -e ./extensions/pi/src/notify-poller.ts   # 临时加载测试
+pi -e ./extensions/pi/src/notify-panel.ts   # 临时加载测试
 ```
 
 ## 运行时控制
@@ -52,17 +52,17 @@ pi -e ./extensions/pi/src/notify-poller.ts   # 临时加载测试
 安装后下次启动 pi 自动加载。
 
 ```
-/notify-poller status    # 查看状态(运行/暂停/间隔/累计投递/上下文占用)
-/notify-poller pause     # 暂停轮询(当前会话)
-/notify-poller resume    # 恢复轮询
-/notify-poller poll      # 手动触发一次轮询
-/notify-poller test      # 自检服务发现 + HTTP 链路
+/notify-panel status    # 查看状态(运行/暂停/间隔/累计投递/上下文占用)
+/notify-panel pause     # 暂停轮询(当前会话)
+/notify-panel resume    # 恢复轮询
+/notify-panel poll      # 手动触发一次轮询
+/notify-panel test      # 自检服务发现 + HTTP 链路
 ```
 
 CLI flag 全局禁用:
 
 ```bash
-pi --no-notify-poller
+pi --no-notify-panel
 ```
 
 ## 设计要点
@@ -77,7 +77,7 @@ pi --no-notify-poller
 
 ## 配置
 
-轮询间隔、退避上限、上下文阈值等常量在 `src/notify-poller.ts` 顶部,按需修改后重启 pi 生效。
+轮询间隔、退避上限、上下文阈值等常量在 `src/notify-panel.ts` 顶部,按需修改后重启 pi 生效。
 
 ## 与 notify-panel skill 的区别
 

@@ -1,6 +1,6 @@
 {
   "name": "notify-panel-pi",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "pi 扩展:轮询 notify-panel 收件箱,把未读通知自动投递给 AI agent 处理(事件驱动 agent)",
   "keywords": [
     "pi-package",
@@ -10,7 +10,7 @@
     "event-driven",
     "notify-panel"
   ],
-  "main": "./src/notify-poller.ts",
+  "main": "./src/notify-panel.ts",
   "pi": {
     "extensions": ["./src"]
   },

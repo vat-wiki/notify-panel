@@ -121,11 +121,11 @@ notify-panel skill install /path/to/skills  # 自定义目录
 
 ### pi 扩展:让 agent 被事件驱动
 
-[pi 扩展](./extensions/pi/)更进一步——它每 N 秒轮询收件箱,有未读通知就**主动投递**给 agent,触发 agent 处理。配合 `--no-notify-poller` 可临时禁用,`/notify-poller pause` 可暂停。
+[pi 扩展](./extensions/pi/)更进一步——它每 N 秒轮询收件箱,有未读通知就**主动投递**给 agent,触发 agent 处理。配合 `--no-notify-panel` 可临时禁用,`/notify-panel pause` 可暂停。
 
 ```bash
 pi install git:github.com/vat-wiki/notify-panel
-# 或开发模式:pi -e ./extensions/pi/src/notify-poller.ts
+# 或开发模式:pi -e ./extensions/pi/src/notify-panel.ts
 ```
 
 典型闭环:CI 失败 → 推送到 notify-panel → pi 扩展轮询到 → 投递给 agent → agent 自动去查 CI 日志、修复、推回结果。**全程无需人介入。**

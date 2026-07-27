@@ -1,5 +1,5 @@
 /**
- * notify-poller — notify-panel 的自动消费器扩展
+ * notify-panel pi 扩展 — notify-panel 的自动消费器
  *
  * 每 N 秒轮询本机 notify-panel 收件箱,把未读通知通过 pi.sendUserMessage
  * 投递给 agent 处理;当上下文占用超过阈值时,在消息里追加压缩提示。
@@ -19,9 +19,8 @@
  *
  * 控制
  * ─────
- * - 命令 /notify-poller status | pause | resume | poll | test
- * - 命令 /notify-panel-watch(仅当前会话)开关轮询
- * - CLI flag --no-notify-poller 全局禁用
+ * - 命令 /notify-panel status | pause | resume | poll | test
+ * - CLI flag --no-notify-panel 全局禁用
  *
  * 可观测
  * ───────
@@ -206,7 +205,7 @@ export default function (pi: ExtensionAPI) {
 	let lastError = ""; // 最近一次错误,供 status 展示
 	let deliveredCount = 0; // 本会话累计投递条数
 
-	const STATUS_KEY = "notify-poller";
+	const STATUS_KEY = "notify-panel";
 
 	function clearTimer() {
 		if (timer) {
@@ -288,7 +287,7 @@ export default function (pi: ExtensionAPI) {
 			await markRead(srv, unread.map((i) => i.id));
 
 			deliveredCount += unread.length;
-			pi.appendEntry("notify-poller:delivered", {
+			pi.appendEntry("notify-panel:delivered", {
 				at: Date.now(),
 				count: unread.length,
 				ids: unread.map((i) => i.id),
@@ -304,21 +303,21 @@ export default function (pi: ExtensionAPI) {
 	}
 
 	// ───────── CLI flag:全局禁用 ─────────
-	pi.registerFlag("no-notify-poller", {
+	pi.registerFlag("no-notify-panel", {
 		description: "Disable the notify-panel poller extension",
 		type: "boolean",
 		default: false,
 	});
 
 	// ───────── 命令:运行时控制 + 自检 ─────────
-	pi.registerCommand("notify-poller", {
+	pi.registerCommand("notify-panel", {
 		description:
 			"notify-panel 轮询器:status | pause | resume | poll | test",
 		handler: async (args, ctx) => {
 			// flag 禁用时,命令仍可用(便于排查),但不真正轮询
-			if (pi.getFlag("no-notify-poller")) {
+			if (pi.getFlag("no-notify-panel")) {
 				ctx.ui.notify(
-					"notify-poller 被 --no-notify-poller 禁用",
+					"notify-panel 被 --no-notify-panel 禁用",
 					"warning",
 				);
 				return;
@@ -330,13 +329,13 @@ export default function (pi: ExtensionAPI) {
 				paused = true;
 				clearTimer();
 				refreshStatus(ctx);
-				ctx.ui.notify("notify-poller 已暂停", "info");
+				ctx.ui.notify("notify-panel 已暂停", "info");
 				return;
 			}
 			if (sub === "resume") {
 				paused = false;
 				schedule(ctx, POLL_INTERVAL_MS);
-				ctx.ui.notify("notify-poller 已恢复", "info");
+				ctx.ui.notify("notify-panel 已恢复", "info");
 				return;
 			}
 			if (sub === "poll") {
@@ -381,8 +380,8 @@ export default function (pi: ExtensionAPI) {
 
 	// ───────── 生命周期 ─────────
 	pi.on("session_start", async (_event, ctx) => {
-		if (pi.getFlag("no-notify-poller")) {
-			ctx.ui.setStatus(STATUS_KEY, "⏸ disabled (--no-notify-poller)");
+		if (pi.getFlag("no-notify-panel")) {
+			ctx.ui.setStatus(STATUS_KEY, "⏸ disabled (--no-notify-panel)");
 			return;
 		}
 		// 先清掉可能残留的旧 timer(/reload 场景)
