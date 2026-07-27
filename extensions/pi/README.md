@@ -35,10 +35,13 @@ notify-panel install   # 开机自启 + 立即启动
 ## 安装
 
 ```bash
-# 方式 A:pi install(推荐)
+# 方式 A:pi install 从 npm(推荐,版本固定)
+pi install npm:notify-panel-pi
+
+# 方式 B:pi install 从 git(跟 main 分支)
 pi install git:github.com/vat-wiki/notify-panel
 
-# 方式 B:本地开发
+# 方式 C:本地开发
 git clone https://github.com/vat-wiki/notify-panel.git
 cd notify-panel && npm install
 pi -e ./extensions/pi/src/notify-poller.ts   # 临时加载测试

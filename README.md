@@ -141,6 +141,7 @@ pi install git:github.com/vat-wiki/notify-panel
 | 跨语言对接、自己做 daemon | [协议规范(JSON Schema)→](./packages/notify-panel/schemas/) |
 | 看 API 详细签名 | 源码 JSDoc(`packages/notify-panel/src/` 下) |
 | 让 agent 自动消费通知 | [pi 扩展 →](./extensions/pi/) |
+| 怎么发版(给维护者) | [发版流程 →](./docs/release.md) |
 
 ## 仓库结构
 
@@ -156,12 +157,12 @@ packages/
         ├── sdk/       TS 集成方 SDK:推通知的类型安全客户端
         └── cli/       命令行:daemon 管理 + 通用客户端
 extensions/
-└── pi/                    pi 扩展(走 pi install 分发,不发布 npm)
+└── pi/                    pi 扩展(npm 包 notify-panel-pi,走 pi install 分发)
 ```
 
 依赖方向:`cli`/`server` → `core` → `protocol`;`sdk`/`cli` 客户端 → `protocol`。客户端永远不碰 `core`,只通过 HTTP 跟 daemon 说话。
 
-**发布分工:** `packages/*` 走 [changesets](https://github.com/changesets/changesets) + npm 自动发布;`extensions/*` 各自独立(pi 扩展走 `pi install`),不纳入 npm 发版。
+**发布分工:** 所有包都走[版本号驱动的自动发版](./docs/release.md)—— 改 `package.json` 的 version、push,CI 自动发 npm + 打 tag + 建 Release。
 
 ## 从源码构建
 

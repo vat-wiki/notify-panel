@@ -1,9 +1,9 @@
 name: Release
 
 # 发版流程(极简):
-#   1. 手动改 packages/<pkg>/package.json 的 version
+#   1. 手动改 packages/<pkg>/package.json 或 extensions/<pkg>/package.json 的 version
 #   2. git commit + push 到 main
-#   3. 本 workflow 自动:比对本地 version 与 npm 上的最新版,
+#   3. 本 workflow 自动:遍历 packages/* 和 extensions/*,比对本地 version 与 npm 上的最新版,
 #      本地版本号更高就 publish + 打 git tag + 建 GitHub Release。
 #
 # 不需要 changeset 文件、不开 PR、不建分支。版本号完全你说了算。
@@ -56,7 +56,7 @@ jobs:
           set -e
           released_any=false
 
-          for pkg_dir in packages/*; do
+          for pkg_dir in packages/* extensions/*; do
             [ -f "$pkg_dir/package.json" ] || continue
 
             name=$(node -p "require('./$pkg_dir/package.json').name")
