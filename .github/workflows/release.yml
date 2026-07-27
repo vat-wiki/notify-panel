@@ -1,5 +1,14 @@
 name: Release
 
+# 发版流程(极简):
+#   1. 手动改 packages/<pkg>/package.json 的 version
+#   2. git commit + push 到 main
+#   3. 本 workflow 自动:比对本地 version 与 npm 上的最新版,
+#      本地版本号更高就 publish + 打 git tag + 建 GitHub Release。
+#
+# 不需要 changeset 文件、不开 PR、不建分支。版本号完全你说了算。
+# 改了代码但没 bump 版本 → 不发布(符合预期)。
+
 on:
   push:
     branches:
@@ -11,21 +20,20 @@ concurrency:
 
 jobs:
   release:
-    name: Version & Publish
+    name: Publish packages
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
       id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
-          # fetch full history so changesets can diff against base branch
+          # tag 推送需要完整历史(保险起见)
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org'
@@ -40,17 +48,70 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Create or Update Release Pull Request
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          # `version` bumps versions + updates CHANGELOG, opens a "Version Packages" PR.
-          # When that PR is merged into main, the second run hits `hasChangesets=false`
-          # and runs `publish`, actually pushing packages to npm.
-          version: npm run version
-          publish: npm run release
-          title: 'chore: version packages'
-          commit: 'chore: version packages'
+      - name: Publish packages not yet on npm
+        id: publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -e
+          released_any=false
+
+          for pkg_dir in packages/*; do
+            [ -f "$pkg_dir/package.json" ] || continue
+
+            name=$(node -p "require('./$pkg_dir/package.json').name")
+            local_ver=$(node -p "require('./$pkg_dir/package.json').version")
+            private=$(node -p "require('./$pkg_dir/package.json').private === true")
+
+            if [ "$private" = "true" ]; then
+              echo "↷ skip $name (private)"
+              continue
+            fi
+
+            # 查 npm 上的版本(包从没发过时为空字符串)
+            published=$(npm view "$name" version 2>/dev/null || echo "")
+
+            # 本地版本号 > npm 上已发布的最新版本 才发
+            should_publish=false
+            if [ -z "$published" ]; then
+              should_publish=true
+            else
+              [ "$(node -p "require('semver').gt('$local_ver','$published')")" = "true" ] && should_publish=true
+            fi
+
+            if [ "$should_publish" = "true" ]; then
+              echo "📦 publishing $name@$local_ver (npm: ${published:-<new>})"
+              npm publish --workspace "$name" --access public
+
+              # tag 名:scoped 包去掉 scope(notify-panel@x.y.z 而非 @scope/notify-panel@x.y.z)
+              short=$(echo "$name" | sed 's#^@.*/##')
+              tag="$short@$local_ver"
+              git tag "$tag"
+              git push origin "$tag"
+              echo "$tag" >> /tmp/released_tags.txt
+              released_any=true
+            else
+              echo "✓ skip $name@$local_ver (already on npm: $published)"
+            fi
+          done
+
+          echo "released_any=$released_any" >> "$GITHUB_OUTPUT"
+          echo "released_tags<<EOF" >> "$GITHUB_OUTPUT"
+          cat /tmp/released_tags.txt 2>/dev/null >> "$GITHUB_OUTPUT" || true
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        if: steps.publish.outputs.released_any == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAGS: ${{ steps.publish.outputs.released_tags }}
+        run: |
+          # 每个发布的包建一个 GitHub Release,body 标注 npm 版本
+          for tag in $TAGS; do
+            name=$(echo "$tag" | sed 's/@[^@]*$//')
+            ver=$(echo "$tag" | sed 's/.*@//')
+            gh release create "$tag" \
+              --title "$tag" \
+              --notes "Published \`$name@$ver\` to npm." \
+              --target main || echo "(release $tag may already exist)"
+          done

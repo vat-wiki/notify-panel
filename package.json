@@ -18,16 +18,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "typecheck": "npm run typecheck --workspaces --if-present",
-    "changeset": "changeset",
-    "version": "changeset version",
-    "release": "npm run build && changeset publish"
+    "typecheck": "npm run typecheck --workspaces --if-present"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.7.0",
-    "@changesets/cli": "^2.31.1",
     "@types/node": "^20.0.0",
+    "@types/semver": "^7.7.1",
     "@vitest/coverage-v8": "^4.1.10",
+    "semver": "^7.8.5",
     "ts-node": "^10.9.0",
     "typescript": "^5.4.0",
     "vitest": "^4.1.10"
