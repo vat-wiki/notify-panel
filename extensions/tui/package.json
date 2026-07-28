@@ -1,6 +1,6 @@
 {
   "name": "notify-panel-tui",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "notify-panel 的 TUI 消费端:把任意交互式 TUI agent(claude/codex/gemini-cli/…)起在 PTY 里,未读通知自动当作\"用户敲的字\"注入,让 agent 被外部事件唤醒",
   "keywords": [
     "ai-agent",

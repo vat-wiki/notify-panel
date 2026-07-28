@@ -6,13 +6,25 @@
  *   notify-panel-tui <cmd> [args...]              把 <cmd> 起在 PTY 里(自动消费 notify-panel)
  *   notify-panel-tui ctl inject <pid> <text...>  往正在运行的会话注入文本(调试用)
  *   notify-panel-tui ctl list                    列出本机活跃会话(读 ~/.notify-panel-tui/sock-*)
+ *   notify-panel-tui -v | --version | version     打印版本号(取自 package.json)
  *
  * 设计:保持极薄。轮询 notify-panel 是自动的;手动注入仅供调试。
  */
 import { runWrapped, sendControl, controlSocketPath } from "./pty.js";
+import * as path from "node:path";
+
+// 运行时基于 __dirname 解析根 package.json,
+// 避免全局安装后 CWD 不在包根导致读不到版本号。
+const VERSION = require(path.join(__dirname, "..", "package.json")).version;
 
 async function main() {
   const [, , sub, ...rest] = process.argv;
+
+  // ── 版本号 ──
+  if (sub === "-v" || sub === "--version" || sub === "version") {
+    process.stdout.write(`notify-panel-tui v${VERSION}\n`);
+    return;
+  }
 
   // ── 子命令:ctl(调试用)──
   if (sub === "ctl") {
@@ -72,7 +84,8 @@ async function main() {
       "用法:\n" +
         "  notify-panel-tui <cmd> [args...]              把目标起在 PTY 里\n" +
         "  notify-panel-tui ctl inject <pid> <text...>   注入文本(调试用)\n" +
-        "  notify-panel-tui ctl list                     列出活跃会话\n",
+        "  notify-panel-tui ctl list                     列出活跃会话\n" +
+        "  notify-panel-tui -v | --version               打印版本号\n",
     );
     process.exit(2);
   }

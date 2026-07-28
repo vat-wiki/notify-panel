@@ -69,6 +69,7 @@ notify-panel 未读 ───────▶│   TuiWatcher(用 NotifyClient SD
 notify-panel-tui <cmd> [args...]              # 包装目标 + 自动起 watcher(默认)
 notify-panel-tui ctl inject <pid> "<text>"    # 手动往一个会话注入文本(调试用)
 notify-panel-tui ctl list                     # 列出活跃会话
+notify-panel-tui -v | --version               # 打印版本号(取自 package.json)
 ```
 
 ## 已验证的链路
