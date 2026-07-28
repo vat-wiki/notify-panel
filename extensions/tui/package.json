@@ -19,7 +19,6 @@
   },
   "scripts": {
     "dev": "tsx src/cli.ts",
-    "smoke:codex": "tsx src/codex-smoke.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit"
   },

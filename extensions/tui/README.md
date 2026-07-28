@@ -74,7 +74,7 @@ notify-panel-tui ctl list                     # 列出活跃会话
 ## 已验证的链路
 
 - ✅ 单元测试(14/14):QueuedInjector 状态机 + watcher 投递契约(注入成功才标记已读 / 注入失败回队 / archived 过滤 / daemon 不可达退避)
-- ✅ codex 端到端冒烟(`npm run smoke:codex`):真实 codex 进程 → raw mode 修复 → idle 判定 → `\r` 提交生效 → codex 进入处理状态
+- ✅ 端到端验证:真实 codex 进程 → raw mode 修复 → idle 判定 → `\r` 提交生效 → codex 进入处理状态
 - ✅ node-pty 时序陷阱已修复:text 与提交键分两次 write,中间留 80ms(见下)
 
 ## 关键技术点
@@ -91,13 +91,15 @@ claude/codex 启动时调用 `TCSETSW` 设 raw mode,但 `TCSETSW` 要求进程�
 
 必须分两次 write,中间留 ~80ms 让 codex 跑一轮事件循环、消化 text、完成回显,再发的 `\r` 才被识别为提交键。
 
-对照:用 Python `os.write(fd, b"hi\r")` 不需要这个延迟;claude code 的 TUI 也不需要(对同 tick 的 `\r` 宽容)。这个延迟对 claude 无副作用,对 codex 必须。详见 `src/codex-smoke.ts` 的调研记录。
+对照:用 Python `os.write(fd, b"hi\r")` 不需要这个延迟;claude code 的 TUI 也不需要(对同 tick 的 `\r` 宽容)。这个延迟对 claude 无副作用,对 codex 必须。
 
 ### 3. 单行注入
 
 claude/codex 的输入框遇到换行会进多行模式(回车变换行)。`formatForInject` 把通知强制压成单行(去 `\r\n\t`、折叠空白、超长截断),保证回车 = 提交。
 
 ## 已知限制
+
+> 改动注入逻辑后,建议照 [手动验证清单](./MANUAL-TESTING.md) 对各工具回归一次。
 
 | 限制 | 影响 | 计划 |
 |------|------|------|
@@ -114,11 +116,11 @@ extensions/tui/
 │   ├── pty.ts               # PTY 桥接 + raw mode + writeToPty + 控制 socket
 │   ├── watcher.ts           # TuiWatcher:用 NotifyClient SDK 轮询 → enqueue
 │   ├── queue.ts             # QueuedInjector: idle 推断 + 排队注入
-│   ├── cli.ts               # CLI:notify-panel-tui <cmd> | ctl inject/list
-│   └── codex-smoke.ts       # codex 端到端冒烟(驱动真实 codex)
+│   └── cli.ts               # CLI:notify-panel-tui <cmd> | ctl inject/list
 ├── test/
 │   ├── queue.test.ts        # QueuedInjector 状态机测试
-│   └── watcher.test.ts      # watcher 投递契约测试(mock HTTP)
+│   ├── watcher.test.ts      # watcher 投递契约测试(mock HTTP)
+│   └── compat.test.ts       # writeToPty 跨工具适配测试(claude/codex/opencode/pi)
 ├── package.json
 └── tsconfig.json
 ```

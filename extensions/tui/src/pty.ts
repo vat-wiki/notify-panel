@@ -44,7 +44,7 @@ export function controlSocketPath(pid: number): string {
 /**
  * 把一段文本注入给目标 TUI(打字 + 提交键)。
  *
- * 关键时序陷阱(实测发现,见 codex-smoke.ts 的调研记录):
+ * 关键时序陷阱(实测发现):
  *   node-pty 把数据高速灌进 PTY kernel buffer,codex(ratatui)在同一个
  *   事件循环 tick 里一次性读到完整 "text\r" 会把 \r 当文本处理、不提交。
  *   必须让目标先消化 text、完成回显,再发的提交键才被识别为键事件。
