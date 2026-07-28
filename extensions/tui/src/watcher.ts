@@ -105,7 +105,7 @@ export class TuiWatcher {
       let unread: Notification[];
       try {
         const result = await this.client.list({ unreadOnly: true });
-        unread = result.items.filter((i) => !i.archived);
+        unread = result.items.filter((i: Notification) => !i.archived);
       } catch (err) {
         // fetch 失败 / daemon 不可达 → 退避
         this.lastError =
