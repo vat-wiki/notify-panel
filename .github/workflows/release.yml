@@ -42,11 +42,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build
+        # 必须在 Test 前:extensions/tui 的测试 import 主包的 dist/(notify-panel/sdk),
+        # 不先 build 主包,test 会报 ERR_MODULE_NOT_FOUND。CI workflow 顺序一致。
+        run: npm run build
+
       - name: Test
         run: npm test
-
-      - name: Build
-        run: npm run build
 
       - name: Publish packages not yet on npm
         id: publish
