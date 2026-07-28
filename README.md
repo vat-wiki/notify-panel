@@ -119,9 +119,9 @@ notify-panel skill install /path/to/skills  # 自定义目录
 
 > 当前 skill 格式面向 [pi](https://github.com/earendil-works/pi-coding-agent);其它 agent(Claude Desktop / Cursor 等)可手动复制 `skill/` 下的 markdown 并按各自格式适配。
 
-### pi 扩展:让 agent 被事件驱动
+### pi 扩展:让 pi agent 被事件驱动
 
-[pi 扩展](./extensions/pi/)更进一步——它每 N 秒轮询收件箱,有未读通知就**主动投递**给 agent,触发 agent 处理。配合 `--no-notify-panel` 可临时禁用,`/notify-panel pause` 可暂停。
+[pi 扩展](./extensions/pi/)更进一步——它每 N 秒轮询收件箱,有未读通知就**主动投递**给 pi agent,触发 agent 处理。配合 `--no-notify-panel` 可临时禁用,`/notify-panel pause` 可暂停。
 
 ```bash
 pi install git:github.com/vat-wiki/notify-panel
@@ -129,6 +129,17 @@ pi install git:github.com/vat-wiki/notify-panel
 ```
 
 典型闭环:CI 失败 → 推送到 notify-panel → pi 扩展轮询到 → 投递给 agent → agent 自动去查 CI 日志、修复、推回结果。**全程无需人介入。**
+
+### tui 扩展:让任意 TUI agent 被事件驱动
+
+[tui 扩展](./extensions/tui/) 把 pi 扩展的能力复刻到**任意交互式 TUI agent**(claude / codex / gemini-cli / …)上——它把目标起在一个伪终端里,未读通知当作"用户敲的字"注入。不依赖目标的私有协议,代价是 idle 判据是启发式。
+
+```bash
+notify-panel-tui claude      # 包装 claude code + 自动消费 notify-panel
+notify-panel-tui codex       # 同理,任意 TUI 都行
+```
+
+适合不用 pi 的场景:你想让 codex / claude code 这些 TUI agent 也被外部事件唤醒,但没有结构化 API 通道。详见 [extensions/tui/README](./extensions/tui/)。
 
 ## 文档
 
@@ -140,7 +151,8 @@ pi install git:github.com/vat-wiki/notify-panel
 | 理解整体架构、为什么这么设计 | [架构设计 →](./packages/notify-panel/docs/architecture.md) |
 | 跨语言对接、自己做 daemon | [协议规范(JSON Schema)→](./packages/notify-panel/schemas/) |
 | 看 API 详细签名 | 源码 JSDoc(`packages/notify-panel/src/` 下) |
-| 让 agent 自动消费通知 | [pi 扩展 →](./extensions/pi/) |
+| 让 pi agent 自动消费通知 | [pi 扩展 →](./extensions/pi/) |
+| 让任意 TUI agent 自动消费通知 | [tui 扩展 →](./extensions/tui/) |
 | 怎么发版(给维护者) | [发版流程 →](./docs/release.md) |
 
 ## 仓库结构
@@ -157,7 +169,8 @@ packages/
         ├── sdk/       TS 集成方 SDK:推通知的类型安全客户端
         └── cli/       命令行:daemon 管理 + 通用客户端
 extensions/
-└── pi/                    pi 扩展(npm 包 notify-panel-pi,走 pi install 分发)
+├── pi/                    pi 扩展(npm 包 notify-panel-pi,走 pi install 分发)
+└── tui/                   tui 扩展(npm 包 notify-panel-tui,包装任意 TUI agent)
 ```
 
 依赖方向:`cli`/`server` → `core` → `protocol`;`sdk`/`cli` 客户端 → `protocol`。客户端永远不碰 `core`,只通过 HTTP 跟 daemon 说话。

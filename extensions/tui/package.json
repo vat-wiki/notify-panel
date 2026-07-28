@@ -1,0 +1,53 @@
+{
+  "name": "notify-panel-tui",
+  "version": "0.1.0",
+  "description": "notify-panel 的 TUI 消费端:把任意交互式 TUI agent(claude/codex/gemini-cli/…)起在 PTY 里,未读通知自动当作\"用户敲的字\"注入,让 agent 被外部事件唤醒",
+  "keywords": [
+    "ai-agent",
+    "agent",
+    "notification",
+    "event-driven",
+    "notify-panel",
+    "tui",
+    "pty",
+    "claude",
+    "codex"
+  ],
+  "type": "module",
+  "bin": {
+    "notify-panel-tui": "bin/notify-panel-tui.js"
+  },
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "smoke:codex": "tsx src/codex-smoke.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "README.md"
+  ],
+  "dependencies": {
+    "node-pty": "^1.0.0",
+    "notify-panel": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^4.1.10"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vat-wiki/notify-panel.git",
+    "directory": "extensions/tui"
+  }
+}

@@ -23,27 +23,33 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.js"
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./protocol": {
       "types": "./dist/protocol/index.d.ts",
-      "require": "./dist/protocol/index.js"
+      "require": "./dist/protocol/index.js",
+      "default": "./dist/protocol/index.js"
     },
     "./core": {
       "types": "./dist/core/index.d.ts",
-      "require": "./dist/core/index.js"
+      "require": "./dist/core/index.js",
+      "default": "./dist/core/index.js"
     },
     "./sdk": {
       "types": "./dist/sdk/index.d.ts",
-      "require": "./dist/sdk/index.js"
+      "require": "./dist/sdk/index.js",
+      "default": "./dist/sdk/index.js"
     },
     "./server": {
       "types": "./dist/server/index.d.ts",
-      "require": "./dist/server/index.js"
+      "require": "./dist/server/index.js",
+      "default": "./dist/server/index.js"
     },
     "./cli": {
       "types": "./dist/cli/index.d.ts",
-      "require": "./dist/cli/index.js"
+      "require": "./dist/cli/index.js",
+      "default": "./dist/cli/index.js"
     },
     "./schemas/*": "./schemas/*"
   },
